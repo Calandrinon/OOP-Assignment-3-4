@@ -31,3 +31,22 @@ char* get_signal_type(const Signal* signal) {
 int get_signal_priority_number(const Signal* signal) {
     return signal->priority_number;
 }
+
+int set_signal_id(Signal* signal, int id) {
+    signal->id = id;
+}
+
+
+char* set_modulated_signal(Signal* signal, char modulated_signal[]) {
+    strcpy(signal->modulated_signal, modulated_signal);
+}
+
+
+char* set_signal_type(Signal* signal, char type[]) {
+    strcpy(signal->type, type);
+}
+
+
+int set_signal_priority_number(Signal* signal, int priority_number) {
+    signal->priority_number = priority_number;
+}

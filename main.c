@@ -2,10 +2,11 @@
 #include "tests.h"
 
 int main() {
-    //SignalRepository repository = create_repository();
-    //SignalService service = create_service(&repository);
-    //UI ui = create_ui(&service);
-    //ui.run();
-    run_all_tests();
+	run_all_tests();
+
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+    UI ui = create_ui(&service);
+    run(&ui);
     return 0;
 }

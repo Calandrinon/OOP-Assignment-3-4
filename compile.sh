@@ -5,6 +5,4 @@ gcc -c service.c
 gcc -c ui.c
 gcc -c tests.c
 gcc -o main *.o
-./main
-rm *.o
-rm main
+

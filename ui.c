@@ -151,6 +151,7 @@ void run(UI* ui) {
     int number_of_commands = sizeof(commands)/sizeof(commands[0]);
 
     while (ui->running) {
+        printf(">>");
         fgets(command, 40, stdin);
         strcpy(ui->last_command, command);
         int found = 0;

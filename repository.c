@@ -1,4 +1,5 @@
 #include "repository.h"
+#include <stdio.h>
 
 SignalRepository create_repository() {
     SignalRepository repository;
@@ -9,8 +10,10 @@ SignalRepository create_repository() {
 
 void add_signal(SignalRepository *repository, int id, char modulated_signal[], char type[], int priority_number) {
     for (int i = 0; i < repository->container.size; i++) {
-        if (repository->container.signals[i].id == id)
+        if (repository->container.signals[i].id == id) {
+            printf("No!\n");
             return;
+        }
     }
 
     int size = repository->container.size;
@@ -32,6 +35,8 @@ void delete_signal_by_id(SignalRepository *repository, int signal_id) {
 
     if (id_found)
         repository->container.size--;
+    else
+        printf("No!\n");
 }
 
 

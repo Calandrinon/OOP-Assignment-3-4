@@ -17,5 +17,6 @@ int set_signal_id(Signal* signal, int id);
 char* set_modulated_signal(Signal* signal, char modulated_signal[]);
 char* set_signal_type(Signal* signal, char type[]);
 int set_signal_priority_number(Signal* signal, int priority_number);
+void display_signal(const Signal* signal);
 
 #endif

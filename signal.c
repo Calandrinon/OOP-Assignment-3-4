@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 #include "signal.h"
 
 Signal create_signal(int id, char modulated_signal[], char type[], int priority_number) {
@@ -49,4 +50,9 @@ char* set_signal_type(Signal* signal, char type[]) {
 
 int set_signal_priority_number(Signal* signal, int priority_number) {
     signal->priority_number = priority_number;
+}
+
+
+void display_signal(const Signal* signal) {
+    printf("%d %s %s %d\n", signal->id, signal->modulated_signal, signal->type, signal->priority_number);
 }

@@ -18,23 +18,28 @@ void ui_exit(UI* ui) {
 }
 
 
-void ui_add(UI* ui) {
-    int id, priority_number;
-    char modulated_signal[30], type[30];
+void ui_split_into_tokens(UI* ui, char* tokens[], int* token_index) {
     char* token;
-    char* tokens[4];
-
+    *token_index = 0;
     token = strtok(ui->last_command, " ");
-    int token_index = 0;
 
     while (token != NULL) {
-        if (token_index > 0) {
-            tokens[token_index-1] = token;
+        if ((*token_index) > 0) {
+            tokens[*(token_index)-1] = token;
         }
 
         token = strtok(NULL, " ");
-        token_index++;
+        (*token_index)++;
     }
+}
+
+
+void ui_add(UI* ui) {
+    int id, priority_number, token_index;
+    char modulated_signal[30], type[30];
+    char* tokens[4];
+
+    ui_split_into_tokens(ui, tokens, &token_index);
 
     if (token_index != 5) {
         printf("Wrong usage. The command \"add\" has 4 parameters: id, modulatedSignal, type, priorityNumber\n");
@@ -52,20 +57,10 @@ void ui_add(UI* ui) {
 
 void ui_list(UI* ui) {
     SignalContainer container = service_get_container(ui->service);
-    char* token;
     char* tokens[2];
+    int token_index;
 
-    token = strtok(ui->last_command, " ");
-    int token_index = 0;
-
-    while (token != NULL) {
-        if (token_index > 0) {
-            tokens[token_index-1] = token;
-        }
-
-        token = strtok(NULL, " ");
-        token_index++;
-    }
+    ui_split_into_tokens(ui, tokens, &token_index);
 
     if (token_index < 1 || token_index > 2) {
         printf("Wrong usage. The command \"add\" has 4 parameters: id, modulatedSignal, type, priorityNumber\n");
@@ -84,22 +79,11 @@ void ui_list(UI* ui) {
 
 
 void ui_update(UI* ui) {
-    int id, new_priority_number;
+    int id, new_priority_number, token_index;
     char new_modulated_signal[30], new_type[30];
-    char* token;
     char* tokens[4];
 
-    token = strtok(ui->last_command, " ");
-    int token_index = 0;
-
-    while (token != NULL) {
-        if (token_index > 0) {
-            tokens[token_index-1] = token;
-        }
-
-        token = strtok(NULL, " ");
-        token_index++;
-    }
+    ui_split_into_tokens(ui, tokens, &token_index);
 
     if (token_index != 5) {
         printf("Wrong usage. The command \"update\" has 4 parameters: id, newModulatedSignal, newType, newPriorityNumber\n");
@@ -116,22 +100,11 @@ void ui_update(UI* ui) {
 
 
 void ui_delete(UI* ui) {
-    int id, priority_number;
+    int id, priority_number, token_index;
     char modulated_signal[30], type[30];
-    char* token;
     char* tokens[4];
 
-    token = strtok(ui->last_command, " ");
-    int token_index = 0;
-
-    while (token != NULL) {
-        if (token_index > 0) {
-            tokens[token_index-1] = token;
-        }
-
-        token = strtok(NULL, " ");
-        token_index++;
-    }
+    ui_split_into_tokens(ui, tokens, &token_index);
 
     if (token_index != 2) {
         printf("Wrong usage. The command \"delete\" has 1 parameter: id\n");

@@ -8,5 +8,6 @@ int main() {
     Service service = create_service(&repository);
     UI ui = create_ui(&service);
     run(&ui);
+	free_repository(&repository);
     return 0;
 }

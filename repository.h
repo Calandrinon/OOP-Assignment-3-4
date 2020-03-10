@@ -3,8 +3,8 @@
 #include "signal.h"
 
 typedef struct {
-    Signal signals[500];
-    int size;
+    Signal *signals;
+    int number_of_elements, array_size;
 } SignalContainer;
 
 typedef struct {
@@ -16,4 +16,6 @@ void add_signal(SignalRepository *repository, int id, char modulated_signal[], c
 void delete_signal_by_id(SignalRepository *repository, int signal_id);
 void update_signal(SignalRepository *repository, int id, char new_modulated_signal[], char new_type[], int new_priority_number);
 SignalContainer get_signal_container(const SignalRepository *repository);
+void free_repository(SignalRepository* repository);
+
 #endif

@@ -73,7 +73,7 @@ void ui_list(UI* ui) {
 
     while (!sorted) {
         sorted = 1;
-        for (int i = 0; i < container.size - 1; i++) {
+        for (int i = 0; i < container.number_of_elements - 1; i++) {
             Signal aux;
             if (strcmp(get_modulated_signal(&sorted_container.signals[i]), get_modulated_signal(&sorted_container.signals[i + 1])) > 0) {
                 aux = sorted_container.signals[i];
@@ -85,7 +85,7 @@ void ui_list(UI* ui) {
     }
 
 
-    for (int i = 0; i < sorted_container.size; i++) {
+    for (int i = 0; i < sorted_container.number_of_elements; i++) {
         if (token_index == 2) {
             if (get_signal_priority_number(&sorted_container.signals[i]) < atoi(tokens[0])) {
                 display_signal(&sorted_container.signals[i]);
@@ -94,8 +94,6 @@ void ui_list(UI* ui) {
             display_signal(&sorted_container.signals[i]);
         }
     }
-
-
 }
 
 

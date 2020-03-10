@@ -67,14 +67,35 @@ void ui_list(UI* ui) {
         return;
     }
 
-    for (int i = 0; i < container.size; i++) {
-        if (token_index == 2) {
-            if (strncmp(container.signals[i].type, tokens[0], strlen(tokens[0])-1) == 0)
-                display_signal(&container.signals[i]);
-        } else {
-            display_signal(&container.signals[i]);
+
+    SignalContainer sorted_container = container;
+    int sorted = 0;
+
+    while (!sorted) {
+        sorted = 1;
+        for (int i = 0; i < container.size - 1; i++) {
+            Signal aux;
+            if (strcmp(get_modulated_signal(&sorted_container.signals[i]), get_modulated_signal(&sorted_container.signals[i + 1])) > 0) {
+                aux = sorted_container.signals[i];
+                sorted_container.signals[i] = sorted_container.signals[i + 1];
+                sorted_container.signals[i + 1] = aux;
+                sorted = 0;
+            }
         }
     }
+
+
+    for (int i = 0; i < sorted_container.size; i++) {
+        if (token_index == 2) {
+            if (get_signal_priority_number(&sorted_container.signals[i]) < atoi(tokens[0])) {
+                display_signal(&sorted_container.signals[i]);
+            }
+        } else {
+            display_signal(&sorted_container.signals[i]);
+        }
+    }
+
+
 }
 
 

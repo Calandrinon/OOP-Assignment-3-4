@@ -54,5 +54,5 @@ int set_signal_priority_number(Signal* signal, int priority_number) {
 
 
 void display_signal(const Signal* signal) {
-    printf("%d %s %s %d\n", signal->id, signal->modulated_signal, signal->type, signal->priority_number);
+    printf("ID: %d; Modulated signal: %s; Type: %s; Priority number: %d\n", signal->id, signal->modulated_signal, signal->type, signal->priority_number);
 }

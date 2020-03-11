@@ -19,6 +19,9 @@ void test_service_add_operation();
 void test_service_delete_operation();
 void test_service_update_operation();
 void test_service_get_container_operation();
+void test_create_undo_stack();
+void test_push_command();
+void test_pop_command();
 void run_all_tests();
 
 #endif

@@ -1,6 +1,7 @@
 #include "repository.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 SignalRepository create_repository() {
     SignalRepository repository;
@@ -77,4 +78,58 @@ SignalContainer get_signal_container(const SignalRepository *repository) {
 
 void free_repository(SignalRepository* repository) {
     free(repository->container.signals);
+}
+
+UndoStack create_undo_stack() {
+    UndoStack undo_stack;
+    undo_stack.number_of_elements = 0;
+    undo_stack.array_size = 2;
+    undo_stack.commands = (char**)malloc(undo_stack.array_size*sizeof(char*));
+
+    return undo_stack;
+}
+
+
+void push_command(UndoStack* undo_stack, char* command) {
+    if (undo_stack->number_of_elements == undo_stack->array_size) {
+        int new_array_size = undo_stack->array_size * 2;
+        char** new_array = (char**)malloc(new_array_size*sizeof(char*));
+
+        for (int i = 0; i < undo_stack->number_of_elements; i++) {
+            new_array[i] = undo_stack->commands[i];
+        }
+
+        undo_stack->array_size = new_array_size;
+        free(undo_stack->commands);
+        undo_stack->commands = new_array;
+        //printf("Resized to %d positions\n", undo_stack->array_size);
+    }
+
+    for (int i = 0; i < undo_stack->number_of_elements; i++) {
+        if (!strcmp(undo_stack->commands[i], command))
+            return;
+    }
+
+    int number_of_elements = undo_stack->number_of_elements;
+    undo_stack->commands[number_of_elements] = (char*)malloc(50*sizeof(char));
+    strcpy(undo_stack->commands[number_of_elements], command);
+    undo_stack->number_of_elements++;
+}
+
+
+char* pop_command(UndoStack* undo_stack) {
+    int last_element = undo_stack->number_of_elements - 1;
+    char* last_command = undo_stack->commands[last_element];  //// POSSIBLE MEMORY LEAK
+
+    undo_stack->number_of_elements--;
+    return last_command;
+}
+
+
+void free_undo_stack(UndoStack* undo_stack) {
+    for (int i = 0; i < undo_stack->number_of_elements; i++) {
+        free(undo_stack->commands[i]);
+    }
+
+    free(undo_stack->commands);
 }

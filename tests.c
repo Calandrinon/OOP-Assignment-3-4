@@ -1,4 +1,5 @@
 #include "tests.h"
+#include <stdlib.h>
 
 void test_signal_creation_and_getters() {
     Signal signal = create_signal(123, "abc", "def", 456);
@@ -166,6 +167,51 @@ void test_service_get_container_operation() {
 }
 
 
+void test_create_undo_stack() {
+    UndoStack undo_stack = create_undo_stack();
+
+    assert(undo_stack.number_of_elements == 0);
+    assert(undo_stack.array_size == 2);
+    free_undo_stack(&undo_stack);
+
+    printf("Undo stack creation test passed!\n");
+}
+
+
+void test_push_command() {
+    UndoStack undo_stack = create_undo_stack();
+
+    push_command(&undo_stack, "1 aaa aaa 456");
+    push_command(&undo_stack, "2 bbb bbb 123");
+    push_command(&undo_stack, "3 ccc ccc 123");
+    push_command(&undo_stack, "4 ddd ddd 123");
+    push_command(&undo_stack, "5 eee eee 123");
+    assert(undo_stack.number_of_elements == 5);
+    free_undo_stack(&undo_stack);
+
+    printf("Stack pushing test passed!\n");
+}
+
+
+void test_pop_command() {
+    UndoStack undo_stack = create_undo_stack();
+
+    push_command(&undo_stack, "1 aaa aaa 456");
+    push_command(&undo_stack, "2 bbb bbb 123");
+    push_command(&undo_stack, "3 ccc ccc 123");
+    push_command(&undo_stack, "4 ddd ddd 123");
+    char* last_command = pop_command(&undo_stack);
+
+    ///printf("last command: %s\n", last_command);
+    assert(strcmp(last_command, "4 ddd ddd 123") == 0);
+    assert(undo_stack.number_of_elements == 3);
+    free_undo_stack(&undo_stack);
+    free(last_command);
+
+    printf("Stack popping test passed!\n");
+}
+
+
 void run_all_tests() {
     test_signal_creation_and_getters();
     test_signal_setters();
@@ -178,4 +224,7 @@ void run_all_tests() {
     test_service_delete_operation();
     test_service_update_operation();
     test_service_get_container_operation();
+    test_create_undo_stack();
+    test_push_command();
+    test_pop_command();
 }

@@ -3,6 +3,7 @@
 Service create_service(SignalRepository* repository) {
     Service service;
     service.repository = repository;
+    service.undo_stack = create_undo_stack();
     return service;
 }
 
@@ -30,4 +31,10 @@ SignalContainer service_get_container(Service* service) {
 	SignalRepository repository = *(service->repository);
 	SignalContainer container = get_signal_container(&repository);
 	return container;
+}
+
+
+void free_service(Service* service) {
+    free_repository(service->repository);
+    free_undo_stack(&(service->undo_stack));
 }

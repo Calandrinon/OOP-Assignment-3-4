@@ -102,7 +102,7 @@ void test_service_creation() {
 
     assert(container.signals[1].id == 789);
     printf("Service creation test passed!\n");
-    free_repository(&repository);
+    free_service(&service);
 }
 
 
@@ -114,7 +114,7 @@ void test_service_add_operation() {
 
     assert(container.signals[0].id == 123);
     printf("Service add operation test passed!\n");
-    free_repository(&repository);
+    free_service(&service);
 }
 
 
@@ -130,7 +130,7 @@ void test_service_delete_operation() {
 
     assert(service.repository->container.number_of_elements == 1);
     printf("Service delete operation test passed!\n");
-    free_repository(&repository);
+    free_service(&service);
 }
 
 
@@ -147,7 +147,7 @@ void test_service_update_operation() {
     assert(strcmp(container.signals[1].type, "bbb") == 0);
     assert(container.signals[1].priority_number == 3000);
     printf("Service update operation test passed!\n");
-    free_repository(&repository);
+    free_service(&service);
 }
 
 
@@ -163,7 +163,7 @@ void test_service_get_container_operation() {
     assert(container.number_of_elements == 3);
     assert(container.signals[1].id == 789);
     printf("Service \"get_container\" operation test passed!\n");
-    free_repository(&repository);
+    free_service(&service);
 }
 
 
@@ -202,7 +202,6 @@ void test_pop_command() {
     push_command(&undo_stack, "4 ddd ddd 123");
     char* last_command = pop_command(&undo_stack);
 
-    ///printf("last command: %s\n", last_command);
     assert(strcmp(last_command, "4 ddd ddd 123") == 0);
     assert(undo_stack.number_of_elements == 3);
     free_undo_stack(&undo_stack);

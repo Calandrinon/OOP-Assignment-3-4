@@ -162,4 +162,6 @@ void run(UI* ui) {
         if (!found)
             printf("The command doesn't exist!\n");
     }
+
+    free_service(ui->service);
 }

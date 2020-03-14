@@ -119,8 +119,7 @@ void ui_update(UI* ui) {
 
 
 void ui_delete(UI* ui) {
-    int id, priority_number, token_index;
-    char modulated_signal[30], type[30];
+    int id, token_index;
     char* tokens[4];
 
     ui_split_into_tokens(ui, tokens, &token_index);
@@ -147,10 +146,8 @@ void run(UI* ui) {
         fgets(command, 40, stdin);
         strcpy(ui->last_command, command);
         int found = 0;
-        char* command_name = NULL;
-
+        
         //obtaining the first token of the command(the command name)
-        command_name = strtok(command,  " ");
 
         for (int i = 0; i < number_of_commands && !found; i++) {
             if (strncmp(command, commands[i], strlen(commands[i])) == 0) {
@@ -159,8 +156,11 @@ void run(UI* ui) {
             }
         }
 
-        if (!found)
+        if (!found) {
             printf("The command doesn't exist!\n");
+        } else {
+            //service_push_last_command_on_stack(ui->service, ui->last_command);
+        }
     }
 
     free_service(ui->service);

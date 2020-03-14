@@ -71,6 +71,18 @@ void update_signal(SignalRepository *repository, int id, char new_modulated_sign
 }
 
 
+Signal search_signal(SignalRepository *repository, int signal_id) {
+
+    for (int i = 0; i < repository->container.number_of_elements; i++) {
+        if (repository->container.signals[i].id == signal_id)
+            return repository->container.signals[i];
+    }
+
+    Signal signal = create_signal(-1, "-1", "-1", -1);
+    return signal;
+}
+
+
 SignalContainer get_signal_container(const SignalRepository *repository) {
     return repository->container;
 }
@@ -83,7 +95,7 @@ void free_repository(SignalRepository* repository) {
 UndoStack create_undo_stack() {
     UndoStack undo_stack;
     undo_stack.number_of_elements = 0;
-    undo_stack.array_size = 2;
+    undo_stack.array_size = 4;
     undo_stack.commands = (char**)malloc(undo_stack.array_size*sizeof(char*));
 
     return undo_stack;
@@ -105,10 +117,12 @@ void push_command(UndoStack* undo_stack, char* command) {
         //printf("Resized to %d positions\n", undo_stack->array_size);
     }
 
+    /**
     for (int i = 0; i < undo_stack->number_of_elements; i++) {
         if (!strcmp(undo_stack->commands[i], command))
             return;
     }
+    **/
 
     int number_of_elements = undo_stack->number_of_elements;
     undo_stack->commands[number_of_elements] = (char*)malloc(50*sizeof(char));

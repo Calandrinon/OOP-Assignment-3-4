@@ -1,5 +1,6 @@
 #include "tests.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 void test_signal_creation_and_getters() {
     Signal signal = create_signal(123, "abc", "def", 456);
@@ -32,6 +33,18 @@ void test_signal_setters() {
     assert(get_signal_priority_number(&signal) == 200);
 
     printf("Signal setters test passed!\n");
+}
+
+
+void test_signal_as_string() {
+    Signal signal = create_signal(123, "abc", "def", 456);
+
+    char* signal_string = get_signal_as_string(&signal);
+
+    assert(strcmp(signal_string, "123 abc def 456") == 0);
+    free(signal_string);
+
+    printf("Signal as string test passed!\n");
 }
 
 
@@ -88,6 +101,18 @@ void test_repository_update_operation() {
     assert(strcmp(container.signals[size-1].type, "bbb") == 0);
     assert(container.signals[size-1].priority_number == 2);
     printf("Repository update operation test passed!\n");
+    free_repository(&repository);
+}
+
+
+void test_repository_search_operation() {
+    SignalRepository repository = create_repository();
+    add_signal(&repository, 789, "abc", "def", 111);
+
+    Signal signal = search_signal(&repository, 789);
+    assert(signal.id == 789);
+
+    printf("Repository search operation test passed!\n");
     free_repository(&repository);
 }
 
@@ -171,7 +196,7 @@ void test_create_undo_stack() {
     UndoStack undo_stack = create_undo_stack();
 
     assert(undo_stack.number_of_elements == 0);
-    assert(undo_stack.array_size == 2);
+    assert(undo_stack.array_size == 4);
     free_undo_stack(&undo_stack);
 
     printf("Undo stack creation test passed!\n");
@@ -211,13 +236,118 @@ void test_pop_command() {
 }
 
 
+void test_service_split_into_tokens() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+
+    char* tokens[5];
+    char command[] = "add 123 abc def 456";
+    service_split_into_tokens(&service, command, tokens);
+
+    assert(strcmp(tokens[0], "add") == 0);
+    assert(strcmp(tokens[1], "123") == 0);
+    assert(strcmp(tokens[2], "abc") == 0);
+    assert(strcmp(tokens[3], "def") == 0);
+    assert(strcmp(tokens[4], "456") == 0);
+
+    printf("Service \"split_into_tokens\" operation test passed!\n");
+    free_service(&service);
+}
+
+
+void test_service_get_reversed_command_of_add() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+
+    char command[] = "add 123 abc def 456";
+    char* reversed_command = service_get_reversed_command(&service, command);
+
+    assert(strcmp(reversed_command, "delete 123") == 0);
+
+    printf("Service \"get_reversed_command_of_add\" operation test passed!\n");
+    free_service(&service);
+}
+
+
+void test_service_get_reversed_command_of_delete() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+    service_add(&service, 123, "abc", "def", 456);
+
+    char command[] = "delete 123";
+    char* reversed_command = service_get_reversed_command(&service, command);
+    char correct_reversed_command[] = "add 123 abc def 456";
+
+    assert(strcmp(reversed_command, correct_reversed_command) == 0);
+
+    printf("Service \"get_reversed_command_of_delete\" operation test passed!\n");
+    free_service(&service);
+}
+
+
+void test_service_get_reversed_command_of_update() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+    service_add(&service, 1, "a", "b", 2);
+
+    char command[] = "update 1 z z 5";
+    char* reversed_command = service_get_reversed_command(&service, command);
+
+    assert(strcmp(reversed_command, "update 1 a b 2") == 0);
+
+    printf("Service \"get_reversed_command_of_update\" operation test passed!\n");
+    free_service(&service);
+}
+
+
+void test_service_push_last_command_on_stack__command_add() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+
+    char command[] = "add 1 a a 1";
+
+    service_push_last_command_on_stack(&service, command);
+
+    char* reversed_command = pop_command(&service.undo_stack);
+    char* actual_command = pop_command(&service.undo_stack);
+
+    assert(strcmp(reversed_command, "delete 1") == 0);
+    assert(strcmp(actual_command, "add 1 a a 1") == 0);
+
+    printf("Service \"push_last_command_on_stack__command_add\" operation test passed!\n");
+    free_service(&service);
+}
+
+
+void test_service_push_last_command_on_stack__command_delete() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+    service_add(&service, 2, "b", "b", 2);
+    char command[] = "delete 2";
+
+    service_push_last_command_on_stack(&service, command);
+
+    char* reversed_command = pop_command(&service.undo_stack);
+    char* actual_command = pop_command(&service.undo_stack);
+
+    assert(strcmp(actual_command, "delete 2") == 0);
+    assert(strcmp(reversed_command, "add 2 b b 2") == 0);
+
+    printf("Service \"push_last_command_on_stack__command_delete\" operation test passed!\n");
+
+    free_service(&service);
+}
+
+
 void run_all_tests() {
     test_signal_creation_and_getters();
     test_signal_setters();
+    test_signal_as_string();
     test_repository_creation();
     test_repository_add_operation();
     test_repository_delete_operation();
     test_repository_update_operation();
+    test_repository_search_operation();
     test_service_creation();
     test_service_add_operation();
     test_service_delete_operation();
@@ -226,4 +356,10 @@ void run_all_tests() {
     test_create_undo_stack();
     test_push_command();
     test_pop_command();
+    test_service_split_into_tokens();
+    test_service_get_reversed_command_of_add();
+    test_service_get_reversed_command_of_delete();
+    test_service_get_reversed_command_of_update();
+    test_service_push_last_command_on_stack__command_add();
+    //test_service_push_last_command_on_stack__command_delete();
 }

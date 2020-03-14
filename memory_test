@@ -1,5 +1,5 @@
 #!/bin/bash
 ./compile.sh
-valgrind --leak-check=full ./main
+valgrind --leak-check=full --track-origins=yes ./main
 rm *.o
 rm main

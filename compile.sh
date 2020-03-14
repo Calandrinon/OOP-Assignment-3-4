@@ -4,5 +4,5 @@ gcc -c repository.c
 gcc -c service.c
 gcc -c ui.c
 gcc -c tests.c
-gcc -o main *.o
+gcc -g -o main *.o
 

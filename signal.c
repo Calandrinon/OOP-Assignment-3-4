@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "signal.h"
+#include <stdlib.h>
 
 Signal create_signal(int id, char modulated_signal[], char type[], int priority_number) {
     Signal signal;
@@ -33,22 +34,40 @@ int get_signal_priority_number(const Signal* signal) {
     return signal->priority_number;
 }
 
-int set_signal_id(Signal* signal, int id) {
+
+char* get_signal_as_string(Signal* signal) {
+    char* str = (char*)malloc(55*sizeof(char));            /// POSSIBLE MEMORY LEAK
+    char* priority_number = (char*)malloc(5*sizeof(char)); /// POSSIBLE MEMORY LEAK
+    sprintf(str, "%d", signal->id);
+    str = strcat(str, " ");
+    str = strcat(str, signal->modulated_signal);
+    str = strcat(str, " ");
+    str = strcat(str, signal->type);
+    str = strcat(str, " ");
+    sprintf(priority_number, "%d", signal->priority_number);
+    str = strcat(str, priority_number);
+    free(priority_number);
+
+    return str;
+}
+
+
+void set_signal_id(Signal* signal, int id) {
     signal->id = id;
 }
 
 
-char* set_modulated_signal(Signal* signal, char modulated_signal[]) {
+void set_modulated_signal(Signal* signal, char modulated_signal[]) {
     strcpy(signal->modulated_signal, modulated_signal);
 }
 
 
-char* set_signal_type(Signal* signal, char type[]) {
+void set_signal_type(Signal* signal, char type[]) {
     strcpy(signal->type, type);
 }
 
 
-int set_signal_priority_number(Signal* signal, int priority_number) {
+void set_signal_priority_number(Signal* signal, int priority_number) {
     signal->priority_number = priority_number;
 }
 

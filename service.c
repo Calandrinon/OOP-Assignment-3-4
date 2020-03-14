@@ -39,7 +39,7 @@ SignalContainer service_get_container(Service* service) {
 
 void free_service(Service* service) {
     free_repository(service->repository);
-    free_undo_stack(&(service->undo_stack));
+    free_undo_stack(&service->undo_stack);
 }
 
 
@@ -63,21 +63,30 @@ char* service_get_reversed_command(Service* service, char* command) {
 
 
     if (strcmp(tokens[0], "add") == 0) {
-        char reversed[] = "delete ";
+        char* reversed = (char*)malloc(sizeof(char)*35);
+        strcpy(reversed, "delete ");
 
         return strcat(reversed, tokens[1]);
     } else if (strcmp(tokens[0], "delete") == 0) {
-        char reversed[] ="add ";
+        char* reversed = (char*)malloc(sizeof(char)*35);
+        strcpy(reversed, "add ");
+
         Signal signal = search_signal(service->repository, atoi(tokens[1]));
         char* signal_as_string = get_signal_as_string(&signal);
+        reversed = strcat(reversed, signal_as_string);
+        free(signal_as_string);
 
-        return strcat(reversed, signal_as_string);
+        return reversed;
     } else if (strcmp(tokens[0], "update") == 0) {
-        char reversed[] = "update ";
+        char* reversed = (char*)malloc(sizeof(char)*35);
+        strcpy(reversed, "update ");
+
         Signal signal = search_signal(service->repository, atoi(tokens[1]));
         char* signal_as_string = get_signal_as_string(&signal);
+        reversed = strcat(reversed, signal_as_string);
+        free(signal_as_string);
 
-        return strcat(reversed, signal_as_string);
+        return reversed;
     }
 
     return NULL;
@@ -89,4 +98,6 @@ void service_push_last_command_on_stack(Service* service, char* last_command) {
 
     push_command(&service->undo_stack, last_command);
     push_command(&service->undo_stack, reversed_command);
+
+    free(reversed_command);
 }

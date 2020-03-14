@@ -259,13 +259,15 @@ void test_service_get_reversed_command_of_add() {
     SignalRepository repository = create_repository();
     Service service = create_service(&repository);
 
-    char command[] = "add 123 abc def 456";
+    char* command = "add 123 abc def 456";
+	char* correct_reversed_command = "delete 123";
     char* reversed_command = service_get_reversed_command(&service, command);
 
-    assert(strcmp(reversed_command, "delete 123") == 0);
+    assert(strcmp(reversed_command, correct_reversed_command) == 0);
 
     printf("Service \"get_reversed_command_of_add\" operation test passed!\n");
     free_service(&service);
+    free(reversed_command);
 }
 
 
@@ -282,6 +284,7 @@ void test_service_get_reversed_command_of_delete() {
 
     printf("Service \"get_reversed_command_of_delete\" operation test passed!\n");
     free_service(&service);
+    free(reversed_command);
 }
 
 
@@ -297,6 +300,7 @@ void test_service_get_reversed_command_of_update() {
 
     printf("Service \"get_reversed_command_of_update\" operation test passed!\n");
     free_service(&service);
+    free(reversed_command);
 }
 
 
@@ -304,7 +308,7 @@ void test_service_push_last_command_on_stack__command_add() {
     SignalRepository repository = create_repository();
     Service service = create_service(&repository);
 
-    char command[] = "add 1 a a 1";
+    char* command = "add 1 a a 1";
 
     service_push_last_command_on_stack(&service, command);
 

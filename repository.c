@@ -48,7 +48,7 @@ void delete_signal_by_id(SignalRepository *repository, int signal_id) {
         if (repository->container.signals[i].id == signal_id)
             id_found = 1;
 
-        if (id_found)
+        if (id_found && i + 1 < repository->container.number_of_elements)
             repository->container.signals[i] = repository->container.signals[i+1];
     }
 

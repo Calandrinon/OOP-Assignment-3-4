@@ -74,7 +74,9 @@ char* service_get_reversed_command(Service* service, char* command) {
         int id = atoi(tokens[1]);
 
         Signal signal = search_signal(service->repository, id);
+
         if (signal.id == -1) {
+            free(reversed);
             return NULL;
         }
 
@@ -89,6 +91,7 @@ char* service_get_reversed_command(Service* service, char* command) {
 
         Signal signal = search_signal(service->repository, atoi(tokens[1]));
         if (signal.id == -1) {
+            free(reversed);
             return NULL;
         }
 

@@ -74,6 +74,10 @@ char* service_get_reversed_command(Service* service, char* command) {
         int id = atoi(tokens[1]);
 
         Signal signal = search_signal(service->repository, id);
+        if (signal.id == -1) {
+            return NULL;
+        }
+
         char* signal_as_string = get_signal_as_string(&signal);
         reversed = strcat(reversed, signal_as_string);
         free(signal_as_string);
@@ -84,6 +88,9 @@ char* service_get_reversed_command(Service* service, char* command) {
         strcpy(reversed, "update ");
 
         Signal signal = search_signal(service->repository, atoi(tokens[1]));
+        if (signal.id == -1) {
+            return NULL;
+        }
 
         char* signal_as_string = get_signal_as_string(&signal);
         reversed = strcat(reversed, signal_as_string);
@@ -110,6 +117,12 @@ void service_push_last_command_on_stack(Service* service, char* last_command) {
 
 
 void service_undo(Service* service) {
+    if (service->undo_stack.number_of_elements == 0)
+        /// Validates the size of the stack before undoing,
+        /// otherwise the program would issue a segmentation fault in the
+        /// case of an empty stack.
+        return;
+
     char* reversed_command = pop_command(&service->undo_stack);
     char* actual_command = pop_command(&service->undo_stack);
     char* tokens[5];

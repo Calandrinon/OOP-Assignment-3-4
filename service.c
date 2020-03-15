@@ -84,6 +84,7 @@ char* service_get_reversed_command(Service* service, char* command) {
         strcpy(reversed, "update ");
 
         Signal signal = search_signal(service->repository, atoi(tokens[1]));
+
         char* signal_as_string = get_signal_as_string(&signal);
         reversed = strcat(reversed, signal_as_string);
         free(signal_as_string);
@@ -103,6 +104,10 @@ void service_push_last_command_on_stack(Service* service, char* last_command) {
 
     push_command(&service->undo_stack, last_command);
     push_command(&service->undo_stack, reversed_command);
+
+    for (int i = 0; i < service->undo_stack.number_of_elements; i++) {
+        printf("\n%s\n", service->undo_stack.commands[i]);
+    }
 
     free(reversed_command);
 }

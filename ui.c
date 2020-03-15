@@ -148,19 +148,16 @@ void run(UI* ui) {
         strcpy(ui->last_command, command);
         int found = 0;
 
-        //obtaining the first token of the command(the command name)
-
         for (int i = 0; i < number_of_commands && !found; i++) {
             if (strncmp(command, commands[i], strlen(commands[i])) == 0) {
                 found = 1;
+                service_push_last_command_on_stack(ui->service, command);
                 command_functions[i](ui);
             }
         }
 
         if (!found) {
             printf("The command doesn't exist!\n");
-        } else {
-            service_push_last_command_on_stack(ui->service, command);
         }
     }
 

@@ -127,10 +127,6 @@ void push_command(UndoStack* undo_stack, char* command) {
 
     int number_of_elements = undo_stack->number_of_elements;
 
-    if (command == NULL) {
-        printf("COMMAND IS NUUUUUUULLLL!!!!!!!!!!!!!!!!!!!!!\n\n\n");
-    }
-
     strcpy(undo_stack->commands[number_of_elements], command);
 
     undo_stack->number_of_elements++;

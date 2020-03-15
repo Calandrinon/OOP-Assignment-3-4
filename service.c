@@ -105,9 +105,23 @@ void service_push_last_command_on_stack(Service* service, char* last_command) {
     push_command(&service->undo_stack, last_command);
     push_command(&service->undo_stack, reversed_command);
 
-    for (int i = 0; i < service->undo_stack.number_of_elements; i++) {
-        printf("\n%s\n", service->undo_stack.commands[i]);
+    free(reversed_command);
+}
+
+
+void service_undo(Service* service) {
+    char* reversed_command = pop_command(&service->undo_stack);
+    char* actual_command = pop_command(&service->undo_stack);
+    char* tokens[5];
+
+    service_split_into_tokens(service, reversed_command, tokens);
+
+    if (strcmp(tokens[0], "add") == 0) {
+        service_add(service, atoi(tokens[1]), tokens[2], tokens[3], atoi(tokens[4]));
+    } else if (strcmp(tokens[0], "delete") == 0) {
+        service_delete(service, atoi(tokens[1]));
+    } else if (strcmp(tokens[0], "update") == 0) {
+        service_update(service, atoi(tokens[1]), tokens[2], tokens[3], atoi(tokens[4]));
     }
 
-    free(reversed_command);
 }

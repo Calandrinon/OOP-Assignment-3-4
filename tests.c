@@ -363,6 +363,72 @@ void test_service_push_last_command_on_stack__command_update() {
 }
 
 
+void test_service_undo_for_add() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+
+    char command[] = "add 2 b b 2";
+    service_push_last_command_on_stack(&service, command);
+    service_add(&service, 2, "b", "b", 2);
+    assert(repository.container.number_of_elements == 1);
+
+    service_undo(&service);
+
+    assert(repository.container.number_of_elements == 0);
+
+    printf("Service undoing operation test passed for the reverse command of add!\n");
+    free_service(&service);
+}
+
+
+void test_service_undo_for_delete() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+    service_add(&service, 2, "b", "b", 2);
+    assert(repository.container.number_of_elements == 1);
+
+    char command[] = "delete 2";
+    service_push_last_command_on_stack(&service, command);
+    service_delete(&service, 2);
+    assert(repository.container.number_of_elements == 0);
+
+    service_undo(&service);
+
+    assert(repository.container.number_of_elements == 1);
+
+    printf("Service undoing operation test passed for the reverse command of delete!\n");
+    free_service(&service);
+}
+
+
+void test_service_undo_for_update() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+    service_add(&service, 2, "b", "b", 2);
+    assert(repository.container.number_of_elements == 1);
+
+    char command[] = "update 2 abc def 456";
+    service_push_last_command_on_stack(&service, command);
+    service_update(&service, 2, "abc", "def", 456);
+    Signal signal = search_signal(&repository, 2);
+    assert(get_signal_id(&signal) == 2);
+    assert(strcmp(get_modulated_signal(&signal), "abc") == 0);
+    assert(strcmp(get_signal_type(&signal), "def") == 0);
+    assert(get_signal_priority_number(&signal) == 456);
+
+    service_undo(&service);
+
+    signal = search_signal(&repository, 2);
+    assert(get_signal_id(&signal) == 2);
+    assert(strcmp(get_modulated_signal(&signal), "b") == 0);
+    assert(strcmp(get_signal_type(&signal), "b") == 0);
+    assert(get_signal_priority_number(&signal) == 2);
+
+    printf("Service undoing operation test passed for the reverse command of update!\n");
+    free_service(&service);
+}
+
+
 void run_all_tests() {
     test_signal_creation_and_getters();
     test_signal_setters();
@@ -387,4 +453,7 @@ void run_all_tests() {
     test_service_push_last_command_on_stack__command_add();
     test_service_push_last_command_on_stack__command_delete();
     test_service_push_last_command_on_stack__command_update();
+    test_service_undo_for_add();
+    test_service_undo_for_delete();
+    test_service_undo_for_update();
 }

@@ -136,9 +136,14 @@ void ui_delete(UI* ui) {
 }
 
 
+void ui_undo(UI* ui) {
+    service_undo(ui->service);
+}
+
+
 void run(UI* ui) {
-    char* commands[] = {"exit", "add", "list", "update", "delete"};
-    void (*command_functions[])(UI*) = {ui_exit, ui_add, ui_list, ui_update, ui_delete};
+    char* commands[] = {"exit", "add", "list", "update", "delete", "undo"};
+    void (*command_functions[])(UI*) = {ui_exit, ui_add, ui_list, ui_update, ui_delete, ui_undo};
     char command[40];
     int number_of_commands = sizeof(commands)/sizeof(commands[0]);
 
@@ -151,7 +156,10 @@ void run(UI* ui) {
         for (int i = 0; i < number_of_commands && !found; i++) {
             if (strncmp(command, commands[i], strlen(commands[i])) == 0) {
                 found = 1;
-                service_push_last_command_on_stack(ui->service, command);
+
+                if (strncmp(command, "undo", 4) != 0 && strncmp(command, "redo", 4) != 0)
+                    service_push_last_command_on_stack(ui->service, command);
+
                 command_functions[i](ui);
             }
         }

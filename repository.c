@@ -125,9 +125,12 @@ void push_command(UndoStack* undo_stack, char* command) {
         //printf("Resized to %d positions\n", undo_stack->array_size);
     }
 
-
     int number_of_elements = undo_stack->number_of_elements;
-    //undo_stack->commands[number_of_elements] = (char*)malloc(35*sizeof(char));
+
+    if (command == NULL) {
+        printf("COMMAND IS NUUUUUUULLLL!!!!!!!!!!!!!!!!!!!!!\n\n\n");
+    }
+
     strcpy(undo_stack->commands[number_of_elements], command);
 
     undo_stack->number_of_elements++;

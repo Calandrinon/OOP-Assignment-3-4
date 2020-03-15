@@ -146,7 +146,7 @@ void run(UI* ui) {
         fgets(command, 40, stdin);
         strcpy(ui->last_command, command);
         int found = 0;
-        
+
         //obtaining the first token of the command(the command name)
 
         for (int i = 0; i < number_of_commands && !found; i++) {
@@ -159,8 +159,9 @@ void run(UI* ui) {
         if (!found) {
             printf("The command doesn't exist!\n");
         } else {
-            //service_push_last_command_on_stack(ui->service, ui->last_command);
+            service_push_last_command_on_stack(ui->service, ui->last_command);
         }
+
     }
 
     free_service(ui->service);

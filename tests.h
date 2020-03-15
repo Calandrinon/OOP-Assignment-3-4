@@ -30,6 +30,7 @@ void test_service_get_reversed_command_of_delete();
 void test_service_get_reversed_command_of_update();
 void test_service_push_last_command_on_stack__command_add();
 void test_service_push_last_command_on_stack__command_delete();
+void test_service_push_last_command_on_stack__command_update();
 void run_all_tests();
 
 #endif

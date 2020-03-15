@@ -96,6 +96,9 @@ char* service_get_reversed_command(Service* service, char* command) {
 void service_push_last_command_on_stack(Service* service, char* last_command) {
     char* reversed_command = service_get_reversed_command(service, last_command);
 
+    if (reversed_command == NULL)
+        return;
+
     push_command(&service->undo_stack, last_command);
     push_command(&service->undo_stack, reversed_command);
 

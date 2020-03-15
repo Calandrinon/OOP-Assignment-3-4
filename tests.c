@@ -343,6 +343,26 @@ void test_service_push_last_command_on_stack__command_delete() {
 }
 
 
+void test_service_push_last_command_on_stack__command_update() {
+    SignalRepository repository = create_repository();
+    Service service = create_service(&repository);
+    service_add(&service, 2, "b", "b", 2);
+    char command[] = "update 2 c c 3";
+
+    service_push_last_command_on_stack(&service, command);
+
+    char* reversed_command = pop_command(&service.undo_stack);
+    char* actual_command = pop_command(&service.undo_stack);
+
+    assert(strcmp(actual_command, "update 2 c c 3") == 0);
+    assert(strcmp(reversed_command, "update 2 b b 2") == 0);
+
+    printf("Service \"push_last_command_on_stack__command_update\" operation test passed!\n");
+
+    free_service(&service);
+}
+
+
 void run_all_tests() {
     test_signal_creation_and_getters();
     test_signal_setters();
@@ -366,4 +386,5 @@ void run_all_tests() {
     test_service_get_reversed_command_of_update();
     test_service_push_last_command_on_stack__command_add();
     test_service_push_last_command_on_stack__command_delete();
+    test_service_push_last_command_on_stack__command_update();
 }

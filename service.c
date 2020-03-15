@@ -7,6 +7,7 @@ Service create_service(SignalRepository* repository) {
     Service service;
     service.repository = repository;
     service.undo_stack = create_undo_stack();
+    service.redo_stack = create_undo_stack();
     return service;
 }
 
@@ -40,6 +41,7 @@ SignalContainer service_get_container(Service* service) {
 void free_service(Service* service) {
     free_repository(service->repository);
     free_undo_stack(&service->undo_stack);
+    free_undo_stack(&service->redo_stack);
 }
 
 
@@ -53,7 +55,6 @@ void service_split_into_tokens(Service* service, char* command, char* tokens[]) 
         token_index++;
     }
 }
-
 
 
 char* service_get_reversed_command(Service* service, char* command) {
@@ -140,4 +141,29 @@ void service_undo(Service* service) {
         service_update(service, atoi(tokens[1]), tokens[2], tokens[3], atoi(tokens[4]));
     }
 
+    push_command(&service->redo_stack, reversed_command);
+    push_command(&service->redo_stack, actual_command);
+}
+
+
+void service_redo(Service* service) {
+    if (service->redo_stack.number_of_elements == 0)
+        return;
+
+    char* actual_command = pop_command(&service->redo_stack);
+    char* reversed_command = pop_command(&service->redo_stack);
+    char* tokens[5];
+
+    service_split_into_tokens(service, actual_command, tokens);
+
+    if (strcmp(tokens[0], "add") == 0) {
+        service_add(service, atoi(tokens[1]), tokens[2], tokens[3], atoi(tokens[4]));
+    } else if (strcmp(tokens[0], "delete") == 0) {
+        service_delete(service, atoi(tokens[1]));
+    } else if (strcmp(tokens[0], "update") == 0) {
+        service_update(service, atoi(tokens[1]), tokens[2], tokens[3], atoi(tokens[4]));
+    }
+
+    push_command(&service->undo_stack, actual_command);
+    push_command(&service->undo_stack, reversed_command);
 }

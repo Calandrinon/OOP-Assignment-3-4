@@ -15,6 +15,8 @@ void ui_add(UI* ui);
 void ui_list(UI* ui);
 void ui_update(UI* ui);
 void ui_delete(UI* ui);
+void ui_undo(UI* ui);
+void ui_redo(UI* ui);
 void run(UI* ui);
 
 #endif

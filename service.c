@@ -55,10 +55,11 @@ void service_split_into_tokens(Service* service, char* command, char* tokens[]) 
 }
 
 
+
 char* service_get_reversed_command(Service* service, char* command) {
     char* tokens[5];
     char command_string[50];
-    strncpy(command_string, command, sizeof(command_string)-1);
+    strcpy(command_string, command);
     service_split_into_tokens(service, command_string, tokens);
 
 
@@ -70,8 +71,9 @@ char* service_get_reversed_command(Service* service, char* command) {
     } else if (strcmp(tokens[0], "delete") == 0) {
         char* reversed = (char*)malloc(sizeof(char)*35);
         strcpy(reversed, "add ");
+        int id = atoi(tokens[1]);
 
-        Signal signal = search_signal(service->repository, atoi(tokens[1]));
+        Signal signal = search_signal(service->repository, id);
         char* signal_as_string = get_signal_as_string(&signal);
         reversed = strcat(reversed, signal_as_string);
         free(signal_as_string);

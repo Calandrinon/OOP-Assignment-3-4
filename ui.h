@@ -5,7 +5,7 @@
 typedef struct {
     Service* service;
     int running;
-    char last_command[40];
+    char* last_command;
 } UI;
 
 UI create_ui(Service* service);

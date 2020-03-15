@@ -9,6 +9,7 @@ UI create_ui(Service* service) {
     UI ui;
     ui.running = true;
     ui.service = service;
+    ui.last_command = (char*)malloc(sizeof(char)*35);
     return ui;
 }
 
@@ -159,10 +160,10 @@ void run(UI* ui) {
         if (!found) {
             printf("The command doesn't exist!\n");
         } else {
-            service_push_last_command_on_stack(ui->service, ui->last_command);
+            service_push_last_command_on_stack(ui->service, command);
         }
-
     }
 
     free_service(ui->service);
+    free(ui->last_command);
 }

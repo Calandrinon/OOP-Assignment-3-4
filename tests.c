@@ -230,7 +230,7 @@ void test_pop_command() {
     assert(strcmp(last_command, "4 ddd ddd 123") == 0);
     assert(undo_stack.number_of_elements == 3);
     free_undo_stack(&undo_stack);
-    free(last_command);
+    //free(last_command);
 
     printf("Stack popping test passed!\n");
 }
@@ -365,5 +365,5 @@ void run_all_tests() {
     test_service_get_reversed_command_of_delete();
     test_service_get_reversed_command_of_update();
     test_service_push_last_command_on_stack__command_add();
-    //test_service_push_last_command_on_stack__command_delete();
+    test_service_push_last_command_on_stack__command_delete();
 }

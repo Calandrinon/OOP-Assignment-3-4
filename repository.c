@@ -98,6 +98,10 @@ UndoStack create_undo_stack() {
     undo_stack.array_size = 4;
     undo_stack.commands = (char**)malloc(undo_stack.array_size*sizeof(char*));
 
+    for (int i = 0; i < undo_stack.array_size; i++) {
+        undo_stack.commands[i] = (char*)malloc(35*sizeof(char));
+    }
+
     return undo_stack;
 }
 
@@ -111,23 +115,21 @@ void push_command(UndoStack* undo_stack, char* command) {
             new_array[i] = undo_stack->commands[i];
         }
 
+        for (int i = undo_stack->array_size; i < new_array_size; i++) {
+            new_array[i] = (char*)malloc(35*sizeof(char));
+        }
+
         undo_stack->array_size = new_array_size;
         free(undo_stack->commands);
         undo_stack->commands = new_array;
         //printf("Resized to %d positions\n", undo_stack->array_size);
     }
 
-    /**
-    for (int i = 0; i < undo_stack->number_of_elements; i++) {
-        if (!strcmp(undo_stack->commands[i], command))
-            return;
-    }
-    **/
 
     int number_of_elements = undo_stack->number_of_elements;
-    undo_stack->commands[number_of_elements] = (char*)malloc(35*sizeof(char));
+    //undo_stack->commands[number_of_elements] = (char*)malloc(35*sizeof(char));
     strcpy(undo_stack->commands[number_of_elements], command);
-    
+
     undo_stack->number_of_elements++;
 }
 
@@ -142,7 +144,7 @@ char* pop_command(UndoStack* undo_stack) {
 
 
 void free_undo_stack(UndoStack* undo_stack) {
-    for (int i = 0; i < undo_stack->number_of_elements; i++) {
+    for (int i = 0; i < undo_stack->array_size; i++) {
         free(undo_stack->commands[i]);
     }
 

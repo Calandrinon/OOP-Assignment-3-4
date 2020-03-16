@@ -231,7 +231,9 @@ void service_undo(Service* service) {
     char* actual_command = pop_command(&service->undo_stack);
     char* tokens[5];
 
-    service_split_into_tokens(service, strdup(reversed_command), tokens);
+    char* duplicate = strdup(reversed_command);
+    service_split_into_tokens(service, duplicate, tokens);
+    free(duplicate);
 
     if (strcmp(tokens[0], "add") == 0) {
         service_add(service, atoi(tokens[1]), tokens[2], tokens[3], atoi(tokens[4]));
@@ -261,7 +263,9 @@ void service_redo(Service* service) {
     char* reversed_command = pop_command(&service->redo_stack);
     char* tokens[5];
 
-    service_split_into_tokens(service, strdup(actual_command), tokens);
+    char* duplicate = strdup(actual_command);
+    service_split_into_tokens(service, duplicate, tokens);
+    free(duplicate);
 
     if (strcmp(tokens[0], "add") == 0) {
         service_add(service, atoi(tokens[1]), tokens[2], tokens[3], atoi(tokens[4]));

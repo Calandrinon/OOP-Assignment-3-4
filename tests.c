@@ -4,12 +4,7 @@
 
 void test_signal_creation_and_getters() {
     Signal signal = create_signal(123, "abc", "def", 456);
-    /**
-    printf("signal ID: %d\n", get_signal_id(&signal));
-    printf("modulated signal: %s\n", get_modulated_signal(&signal));
-    printf("signal type: %s\n", get_signal_type(&signal));
-    printf("signal priority number: %d\n", get_signal_priority_number(&signal));
-    **/
+
     assert(get_signal_id(&signal) == 123);
     assert(strcmp(get_modulated_signal(&signal), "abc") == 0);
     assert(strcmp(get_signal_type(&signal), "def") == 0);
@@ -92,6 +87,7 @@ void test_repository_delete_operation() {
 void test_repository_update_operation() {
     SignalRepository repository = create_repository();
     add_signal(&repository, 789, "abc", "def", 111);
+
     update_signal(&repository, 789, "aaa", "bbb", 2);
     SignalContainer container = get_signal_container(&repository);
     int size = container.number_of_elements;

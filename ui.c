@@ -146,11 +146,38 @@ void ui_redo(UI* ui) {
 }
 
 
+void ui_help(UI* ui) {
+    printf("  Available commands: add, list, update, delete, undo, redo, exit, clear, help\n");
+    printf("        - add (id) (modulated signal) (type) (priority number)\n");
+    printf("            -> adds a signal to the repository\n");
+    printf("        - list\n");
+    printf("            -> displays all the signals in the repository\n");
+    printf("        - update (id) (new modulated signal) (new type) (new priority number)\n");
+    printf("            -> updates a signal from the repository\n");
+    printf("        - delete (id)\n");
+    printf("            -> deletes a signal from the repository\n");
+    printf("        - undo\n");
+    printf("            -> undoes the last executed command\n");
+    printf("        - redo\n");
+    printf("            -> redoes the last undone command\n");
+    printf("        - exit\n");
+    printf("            -> exits the program\n");
+}
+
+
+void ui_clear(UI* ui) {
+    for (int i = 0; i < 100; i++)
+        printf("\n");
+}
+
+
 void run(UI* ui) {
-    char* commands[] = {"exit", "add", "list", "update", "delete", "undo", "redo"};
-    void (*command_functions[])(UI*) = {ui_exit, ui_add, ui_list, ui_update, ui_delete, ui_undo, ui_redo};
+    char* commands[] = {"exit", "add", "list", "update", "delete", "undo", "redo", "help", "clear"};
+    void (*command_functions[])(UI*) = {ui_exit, ui_add, ui_list, ui_update, ui_delete, ui_undo, ui_redo, ui_help, ui_clear};
     char command[40];
     int number_of_commands = sizeof(commands)/sizeof(commands[0]);
+
+    ui_help(ui);
 
     while (ui->running) {
         printf(">>");
@@ -162,8 +189,13 @@ void run(UI* ui) {
             if (strncmp(command, commands[i], strlen(commands[i])) == 0) {
                 found = 1;
 
-                if (strncmp(command, "undo", 4) != 0 && strncmp(command, "redo", 4) != 0)
+                if (strncmp(command, "undo", 4) != 0 &&
+                strncmp(command, "redo", 4) != 0 &&
+                strncmp(command, "help", 4) != 0 &&
+                strncmp(command, "list", 4) != 0 &&
+                strncmp(command, "clear", 5) != 0) {
                     service_push_last_command_on_stack(ui->service, command);
+                }
 
                 command_functions[i](ui);
             }

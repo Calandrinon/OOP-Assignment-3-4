@@ -4,6 +4,14 @@
 #include <stdlib.h>
 
 Signal create_signal(int id, char modulated_signal[], char type[], int priority_number) {
+    /**
+        Creates a signal with the given parameters.
+        Returns the created signal.
+
+        Output:
+            - a struct of type Signal
+    **/
+
     Signal signal;
 
     signal.id = id;
@@ -36,8 +44,8 @@ int get_signal_priority_number(const Signal* signal) {
 
 
 char* get_signal_as_string(Signal* signal) {
-    char* str = (char*)malloc(55*sizeof(char));            /// POSSIBLE MEMORY LEAK
-    char* priority_number = (char*)malloc(5*sizeof(char)); /// POSSIBLE MEMORY LEAK
+    char* str = (char*)malloc(55*sizeof(char));
+    char* priority_number = (char*)malloc(5*sizeof(char));
     sprintf(str, "%d", signal->id);
     str = strcat(str, " ");
     str = strcat(str, signal->modulated_signal);
